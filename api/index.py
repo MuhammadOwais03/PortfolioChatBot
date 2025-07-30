@@ -1,10 +1,10 @@
-from fastapi import FastAPI
-from mangum import Mangum
+from http.server import BaseHTTPRequestHandler
+import json
 
-app = FastAPI()
-
-@app.get("/")
-def home():
-    return {"message": "Hello from FastAPI"}
-
-handler = Mangum(app)  # Only used on Vercel
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "application/json")
+        self.end_headers()
+        message = {"message": "Hello from Vercel's Python server!"}
+        self.wfile.write(json.dumps(message).encode())
