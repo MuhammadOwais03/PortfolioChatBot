@@ -2,12 +2,13 @@ import os
 from dotenv import load_dotenv
 from pinecone import Pinecone, ServerlessSpec
 from langchain_community.vectorstores import Pinecone as LangchainPinecone
-from load_data import load_pdf, text_splitter, download_hugging_face_embeddings
+from load_data import load_pdf, text_splitter, download_hugging_face_embeddings, CustomInstructorEmbedding, download_cohere_embedding
 import time
 
 load_dotenv()
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
-INDEX_NAME = "portfolio-chatbot"
+INDEX_NAME = "portfolio-chatbot-1"
+COHERE_API_KEY = os.getenv("COHERE_API_KEY")
 
 print(f"Using Pinecone API Key: {PINECONE_API_KEY[:10]}..." if PINECONE_API_KEY else "No API key found")
 
@@ -88,10 +89,11 @@ except Exception as e:
 
 print("Loading embeddings model...")
 try:
-    embeddings = download_hugging_face_embeddings()
+    embeddings = download_cohere_embedding(COHERE_API_KEY)
     
     test_embedding = embeddings.embed_query("test")
     print(f"Embedding dimension: {len(test_embedding)}")
+    
     
 except Exception as e:
     print(f"Error loading embeddings: {e}")
